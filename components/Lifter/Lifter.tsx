@@ -122,11 +122,11 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
         </Grid.Col>
         <Grid.Col md={3} span={6}>
           <InputBase label="Rank (points) 🪙" variant="unstyled" component="button">
-            {lifter.posByTotal === '1'
+            {lifter.posByPoints === '1'
               ? '🥇'
-              : lifter.posByTotal === '2'
+              : lifter.posByPoints === '2'
               ? '🥈'
-              : lifter.posByTotal === '3'
+              : lifter.posByPoints === '3'
               ? '🥉'
               : `${lifter.posByTotal}°`}
           </InputBase>
