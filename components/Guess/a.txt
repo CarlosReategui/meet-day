@@ -1,0 +1,13 @@
+Entonces en la tarjeta de escenarios tendrías 
+
+athlete name
+current deadlift
+deadlift guess
+acc total, 
+acc points, 
+forecasted total, 
+forecasted points, 
+current place by total, 
+forecasted place by total,
+current place by points, 
+forecasted place by points,
