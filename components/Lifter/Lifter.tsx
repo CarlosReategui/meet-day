@@ -57,47 +57,35 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
     );
   }, [lifters[id].squat, lifters[id].bench, lifters[id].deadlift, lifters[id].weight]);
 
+  const sortLifterByProperty = useCallback(
+    (property: 'total' | 'points') => {
+      const liftersCopy = structuredClone(lifters);
+      liftersCopy.sort((a, b) => parseFloat(b[property] || '0') - parseFloat(a[property] || '0'));
+
+      const order: { [key: number]: number } = {};
+      liftersCopy.forEach((curLifter, idx) => {
+        order[curLifter.id] = idx + 1;
+      });
+
+      const p: 'Total' | 'Points' = property === 'total' ? 'Total' : 'Points';
+
+      setLifters(
+        lifters.map((curLifter) => {
+          const updatedLifter = curLifter;
+          updatedLifter[`posBy${p}`] = order[curLifter.id].toString();
+          return updatedLifter;
+        })
+      );
+    },
+    [lifters, setLifters]
+  );
+
   useEffect(() => {
-    const liftersCopy = structuredClone(lifters);
-    // const sortedLifters = liftersCopy.sort((a, b) => {
-    //   return parseFloat(b.total || '0') - parseFloat(a.total || '0');
-    // });
-
-    liftersCopy.sort((a, b) => parseFloat(b.total || '0') - parseFloat(a.total || '0'));
-
-    const order: { [key: number]: number } = {};
-    liftersCopy.forEach((curLifter, idx) => {
-      order[curLifter.id] = idx + 1;
-    });
-
-    setLifters(
-      lifters.map((curLifter) => {
-        const updatedLifter = curLifter;
-        updatedLifter.posByTotal = order[curLifter.id].toString();
-        return updatedLifter;
-      })
-    );
+    sortLifterByProperty('total');
   }, [lifters[id].total]);
 
   useEffect(() => {
-    const liftersCopy = structuredClone(lifters);
-    liftersCopy.sort((a, b) => parseFloat(b.points || '0') - parseFloat(a.points || '0'));
-    // const sortedLifters = liftersCopy.sort((a, b) => {
-    //   return parseFloat(b.points || '0') - parseFloat(a.points || '0');
-    // });
-
-    const order: { [key: number]: number } = {};
-    liftersCopy.forEach((curLifter, idx) => {
-      order[curLifter.id] = idx + 1;
-    });
-
-    setLifters(
-      lifters.map((curLifter) => {
-        const updatedLifter = curLifter;
-        updatedLifter.posByWeight = order[curLifter.id].toString();
-        return updatedLifter;
-      })
-    );
+    sortLifterByProperty('points');
   }, [lifters[id].points]);
 
   return (
@@ -137,7 +125,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
               label="Pos. by points"
               disabled
               variant="unstyled"
-              value={lifter.posByWeight}
+              value={lifter.posByPoints}
             />
           </Grid.Col>
         </>

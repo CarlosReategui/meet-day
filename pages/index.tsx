@@ -22,7 +22,7 @@ export default function HomePage() {
         total: '',
         points: '',
         posByTotal: '',
-        posByWeight: '',
+        posByPoints: '',
       },
     ]);
     setId(id + 1);

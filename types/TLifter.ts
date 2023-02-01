@@ -8,5 +8,5 @@ export type TLifter = {
   total: string;
   points: string;
   posByTotal: string;
-  posByWeight: string;
+  posByPoints: string;
 };
