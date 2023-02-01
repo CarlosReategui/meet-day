@@ -134,7 +134,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
         <Grid.Col md={2} span={4}>
           <TextInput
             placeholder="-"
-            label="Squat (🇸)"
+            label="Squat"
             value={lifter.squat}
             onChange={(e) => setLifter(e, 'squat')}
             type="number"
@@ -143,7 +143,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
         <Grid.Col md={2} span={4}>
           <TextInput
             placeholder="-"
-            label="Bench (🇧)"
+            label="Bench"
             value={lifter.bench}
             onChange={(e) => setLifter(e, 'bench')}
             type="number"
@@ -152,7 +152,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
         <Grid.Col md={2} span={4}>
           <TextInput
             placeholder="-"
-            label="Deadlift (🇩)"
+            label="Deadlift"
             value={lifter.deadlift}
             onChange={(e) => setLifter(e, 'deadlift')}
             type="number"
