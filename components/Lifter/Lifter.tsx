@@ -91,92 +91,92 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
   return (
     <Card mt="lg" p="lg" radius="md" withBorder>
       <Grid>
-        <>
-          <Grid.Col span={3}>
-            <TextInput
-              placeholder="Athlete"
-              label="Atleta"
-              value={lifter.name}
-              variant="filled"
-              onChange={(e) => setLifter(e, 'name')}
-            />
-          </Grid.Col>
-          <Grid.Col span={3}>
-            <TextInput
-              placeholder="Peso"
-              label="Peso"
-              type="number"
-              value={lifter.weight}
-              onChange={(e) => setLifter(e, 'weight')}
-            />
-          </Grid.Col>
-          <Grid.Col span={3}>
-            <TextInput
-              placeholder=""
-              label="Pos. by total"
-              disabled
-              variant="unstyled"
-              value={lifter.posByTotal}
-            />
-          </Grid.Col>
-          <Grid.Col span={3}>
-            <TextInput
-              placeholder=""
-              label="Pos. by points"
-              disabled
-              variant="unstyled"
-              value={lifter.posByPoints}
-            />
-          </Grid.Col>
-        </>
-        <>
-          <Grid.Col span={2}>
-            <TextInput
-              placeholder="-"
-              label="Squat"
-              value={lifter.squat}
-              onChange={(e) => setLifter(e, 'squat')}
-              type="number"
-            />
-          </Grid.Col>
-          <Grid.Col span={2}>
-            <TextInput
-              placeholder="-"
-              label="Bench"
-              value={lifter.bench}
-              onChange={(e) => setLifter(e, 'bench')}
-              type="number"
-            />
-          </Grid.Col>
-          <Grid.Col span={2}>
-            <TextInput
-              placeholder="-"
-              label="Deadlift"
-              value={lifter.deadlift}
-              onChange={(e) => setLifter(e, 'deadlift')}
-              type="number"
-            />
-          </Grid.Col>
-          <Grid.Col span={3}>
-            <TextInput
-              placeholder="-"
-              label="Total (kg)"
-              value={lifter.total}
-              disabled
-              variant="unstyled"
-            />
-          </Grid.Col>
-          <Grid.Col span={3}>
-            <TextInput
-              placeholder="-"
-              label="IPF Points"
-              type="number"
-              value={lifter.points}
-              disabled
-              variant="unstyled"
-            />
-          </Grid.Col>
-        </>
+        {/* <> */}
+        <Grid.Col md={3} span={6}>
+          <TextInput
+            placeholder="Athlete"
+            label="Atleta"
+            value={lifter.name}
+            variant="filled"
+            onChange={(e) => setLifter(e, 'name')}
+          />
+        </Grid.Col>
+        <Grid.Col md={3} span={6}>
+          <TextInput
+            placeholder="Peso"
+            label="Peso"
+            type="number"
+            value={lifter.weight}
+            onChange={(e) => setLifter(e, 'weight')}
+          />
+        </Grid.Col>
+        <Grid.Col md={3} span={6}>
+          <TextInput
+            placeholder=""
+            label="Pos. by total"
+            disabled
+            variant="unstyled"
+            value={lifter.posByTotal}
+          />
+        </Grid.Col>
+        <Grid.Col md={3} span={6}>
+          <TextInput
+            placeholder=""
+            label="Pos. by points"
+            disabled
+            variant="unstyled"
+            value={lifter.posByPoints}
+          />
+        </Grid.Col>
+        {/* </>
+        <> */}
+        <Grid.Col md={2} span={4}>
+          <TextInput
+            placeholder="-"
+            label="Squat"
+            value={lifter.squat}
+            onChange={(e) => setLifter(e, 'squat')}
+            type="number"
+          />
+        </Grid.Col>
+        <Grid.Col md={2} span={4}>
+          <TextInput
+            placeholder="-"
+            label="Bench"
+            value={lifter.bench}
+            onChange={(e) => setLifter(e, 'bench')}
+            type="number"
+          />
+        </Grid.Col>
+        <Grid.Col md={2} span={4}>
+          <TextInput
+            placeholder="-"
+            label="Deadlift"
+            value={lifter.deadlift}
+            onChange={(e) => setLifter(e, 'deadlift')}
+            type="number"
+          />
+        </Grid.Col>
+        <Grid.Col md={3} span={6}>
+          <TextInput
+            placeholder="-"
+            label="Total (kg)"
+            value={lifter.total}
+            disabled
+            variant="unstyled"
+          />
+        </Grid.Col>
+        <Grid.Col md={3} span={6}>
+          <TextInput
+            placeholder="-"
+            label="IPF Points"
+            type="number"
+            value={lifter.points}
+            disabled
+            variant="unstyled"
+          />
+        </Grid.Col>
+        {/* </> */}
       </Grid>
     </Card>
   );
