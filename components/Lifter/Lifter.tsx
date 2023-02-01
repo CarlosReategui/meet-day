@@ -94,7 +94,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
         <Grid.Col md={3} span={6}>
           <TextInput
             placeholder="Athlete"
-            label="Atleta"
+            label="Athlete 🏋️‍♂️"
             value={lifter.name}
             variant="filled"
             onChange={(e) => setLifter(e, 'name')}
@@ -102,27 +102,39 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
         </Grid.Col>
         <Grid.Col md={3} span={6}>
           <TextInput
-            placeholder="Peso"
-            label="Peso"
+            placeholder="Weight"
+            label="Weight (kg) ⚖️"
             type="number"
             value={lifter.weight}
             onChange={(e) => setLifter(e, 'weight')}
           />
         </Grid.Col>
         <Grid.Col md={3} span={6}>
-          <InputBase label="Pos. by total" variant="unstyled" component="button">
-            {lifter.posByTotal}
+          <InputBase label="Rank (total) 🏅" variant="unstyled" component="button">
+            {lifter.posByTotal === '1'
+              ? '🥇'
+              : lifter.posByTotal === '2'
+              ? '🥈'
+              : lifter.posByTotal === '3'
+              ? '🥉'
+              : `${lifter.posByTotal}°`}
           </InputBase>
         </Grid.Col>
         <Grid.Col md={3} span={6}>
-          <InputBase label="Pos. by points" variant="unstyled" component="button">
-            {lifter.posByPoints}
+          <InputBase label="Rank (points) 🪙" variant="unstyled" component="button">
+            {lifter.posByTotal === '1'
+              ? '🥇'
+              : lifter.posByTotal === '2'
+              ? '🥈'
+              : lifter.posByTotal === '3'
+              ? '🥉'
+              : `${lifter.posByTotal}°`}
           </InputBase>
         </Grid.Col>
         <Grid.Col md={2} span={4}>
           <TextInput
             placeholder="-"
-            label="Squat"
+            label="Squat (🇸)"
             value={lifter.squat}
             onChange={(e) => setLifter(e, 'squat')}
             type="number"
@@ -131,7 +143,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
         <Grid.Col md={2} span={4}>
           <TextInput
             placeholder="-"
-            label="Bench"
+            label="Bench (🇧)"
             value={lifter.bench}
             onChange={(e) => setLifter(e, 'bench')}
             type="number"
@@ -140,19 +152,19 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
         <Grid.Col md={2} span={4}>
           <TextInput
             placeholder="-"
-            label="Deadlift"
+            label="Deadlift (🇩)"
             value={lifter.deadlift}
             onChange={(e) => setLifter(e, 'deadlift')}
             type="number"
           />
         </Grid.Col>
         <Grid.Col md={3} span={6}>
-          <InputBase label="Total (kg)" variant="unstyled" component="button">
+          <InputBase label="Total (kg) 🏹" variant="unstyled" component="button">
             {lifter.total}
           </InputBase>
         </Grid.Col>
         <Grid.Col md={3} span={6}>
-          <InputBase label="IPF Points" variant="unstyled" component="button">
+          <InputBase label="IPF Points 🎯" variant="unstyled" component="button">
             {lifter.points || '-'}
           </InputBase>
         </Grid.Col>
