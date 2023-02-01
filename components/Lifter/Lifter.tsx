@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react';
-import { Card, Grid, TextInput } from '@mantine/core';
+import { Card, Grid, InputBase, TextInput } from '@mantine/core';
 import { TLifter } from '../../types';
 
 type Props = {
@@ -91,7 +91,6 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
   return (
     <Card mt="lg" p="lg" radius="md" withBorder>
       <Grid>
-        {/* <> */}
         <Grid.Col md={3} span={6}>
           <TextInput
             placeholder="Athlete"
@@ -111,25 +110,15 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
           />
         </Grid.Col>
         <Grid.Col md={3} span={6}>
-          <TextInput
-            placeholder=""
-            label="Pos. by total"
-            disabled
-            variant="unstyled"
-            value={lifter.posByTotal}
-          />
+          <InputBase label="Pos. by total" variant="unstyled" component="button">
+            {lifter.posByTotal}
+          </InputBase>
         </Grid.Col>
         <Grid.Col md={3} span={6}>
-          <TextInput
-            placeholder=""
-            label="Pos. by points"
-            disabled
-            variant="unstyled"
-            value={lifter.posByPoints}
-          />
+          <InputBase label="Pos. by points" variant="unstyled" component="button">
+            {lifter.posByPoints}
+          </InputBase>
         </Grid.Col>
-        {/* </>
-        <> */}
         <Grid.Col md={2} span={4}>
           <TextInput
             placeholder="-"
@@ -158,25 +147,15 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
           />
         </Grid.Col>
         <Grid.Col md={3} span={6}>
-          <TextInput
-            placeholder="-"
-            label="Total (kg)"
-            value={lifter.total}
-            disabled
-            variant="unstyled"
-          />
+          <InputBase label="Total (kg)" variant="unstyled" component="button">
+            {lifter.total}
+          </InputBase>
         </Grid.Col>
         <Grid.Col md={3} span={6}>
-          <TextInput
-            placeholder="-"
-            label="IPF Points"
-            type="number"
-            value={lifter.points}
-            disabled
-            variant="unstyled"
-          />
+          <InputBase label="IPF Points" variant="unstyled" component="button">
+            {lifter.points || '-'}
+          </InputBase>
         </Grid.Col>
-        {/* </> */}
       </Grid>
     </Card>
   );
