@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react';
-import { Card, Grid, InputBase, TextInput } from '@mantine/core';
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { Badge, Card, Grid, InputBase, TextInput } from '@mantine/core';
 import { TLifter } from '../../types';
 
 type Props = {
@@ -10,6 +10,11 @@ type Props = {
 };
 
 export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
+  const [winningLiftTotal,setWinningLiftTotal] = useState("");
+  const [winningLiftPoints,setWinningLiftPoints] = useState("");
+  const [nextUp,setNextup]=useState("")
+  const [nextUpPoints,setNextupPoints]=useState("")
+
   const setLifter = useCallback(
     (
       event: React.ChangeEvent<HTMLInputElement>,
@@ -80,6 +85,82 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
     [lifters, setLifters]
   );
 
+  const calculatePointsToWin=(weight: string,total:string,oppPoints:string)=>{
+    const A = 1199.72839;
+    const B = 1025.18162;
+    const C = 0.00921;
+    let totalRequired
+    let winningLift
+    if(weight){
+      totalRequired= parseInt(oppPoints,10)/(100 / (A - B * Math.exp(-C * parseFloat(weight))));
+      winningLift=totalRequired-parseInt(total,10)
+      winningLift = winningLift.toFixed(2)
+    }
+    return winningLift
+
+  }
+
+  const toWinTotal = (total: string, posByTotal: string,weight:string)=>{
+    let liftToWin = 0
+    let oppositionPos = ""
+    let oppWeight=0
+    let result=""
+    if(posByTotal=="1"){
+      setNextup("To win")
+      return String("🏆")
+    }else if(posByTotal=="2"){
+      oppositionPos="1"
+      setNextup("For 1st place")
+    }else if(posByTotal=="3"){
+      oppositionPos="2"
+      setNextup("For 2nd place")
+    }else{
+      oppositionPos="3"
+      setNextup("For podium")
+    }
+    lifters.forEach((lifter,index)=>{
+      if(lifter.posByTotal==oppositionPos){
+        liftToWin=parseFloat(lifter.total)-parseFloat(total)
+        oppWeight=parseFloat(lifter.weight)
+      }
+    })
+    if(liftToWin>0){
+      result= "Lift above "+String(liftToWin)+"kg"
+    }else{
+      if(oppWeight>=parseFloat(weight)){
+        result= "Winning by bodyweight"
+      }else{
+        result= "Losing by bodyweight"
+      }
+    }
+    return result
+    
+  }
+
+  const toWinPoints = (posByPoints: string,weight:string,total:string)=>{
+    let liftToWin
+    let oppositionPos = ""
+    if(posByPoints=="1"){
+      setNextupPoints("To win")
+      return String("🏆")
+    }else if(posByPoints=="2"){
+      oppositionPos="1"
+      setNextupPoints("For 1st place")
+    }else if(posByPoints=="3"){
+      oppositionPos="2"
+      setNextupPoints("For 2nd place")
+    }else{
+      oppositionPos="3"
+      setNextupPoints("For podium")
+    }
+    lifters.forEach((lifter,index)=>{
+      if(lifter.posByPoints==oppositionPos){
+        liftToWin=calculatePointsToWin(weight,total,lifter.points)
+      }
+    })
+    return "Lift above "+String(liftToWin)+"kg"
+  }
+
   useEffect(() => {
     sortLifterByProperty('total');
   }, [lifters[id].total]);
@@ -87,6 +168,11 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
   useEffect(() => {
     sortLifterByProperty('points');
   }, [lifters[id].points]);
+
+  useEffect(()=>{
+    setWinningLiftTotal(toWinTotal(lifter.total,lifter.posByTotal,lifter.weight));
+    setWinningLiftPoints(toWinPoints(lifter.posByPoints,lifter.weight,lifter.total))
+  },[lifters])
 
   return (
     <Card mt="lg" p="lg" radius="md" withBorder>
@@ -166,6 +252,16 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
         <Grid.Col md={3} span={6}>
           <InputBase label="IPF Points 🎯" variant="unstyled" component="button">
             {lifter.points || '-'}
+          </InputBase>
+        </Grid.Col>
+        <Grid.Col md={3} span={6} offset={6}>
+          <InputBase label={`${nextUp} (kg) 🤞`} variant="unstyled" component="button" color="red">
+            <Badge color={lifter.posByTotal=="1"?"yellow":"blue"}> {winningLiftTotal}</Badge>
+          </InputBase>
+        </Grid.Col>
+        <Grid.Col md={3} span={6}>
+          <InputBase label={`${nextUp} (points) 🤞`} variant="unstyled" component="button">
+            <Badge color={lifter.posByPoints=="1"?"yellow":"blue"}>{winningLiftPoints}</Badge>
           </InputBase>
         </Grid.Col>
       </Grid>
