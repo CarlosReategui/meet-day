@@ -92,8 +92,8 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
     let totalRequired
     let winningLift
     if(weight){
-      totalRequired= parseInt(oppPoints,10)/(100 / (A - B * Math.exp(-C * parseFloat(weight))));
-      winningLift=totalRequired-parseInt(total,10)
+      totalRequired= parseFloat(oppPoints)/(100 / (A - B * Math.exp(-C * parseFloat(weight))));
+      winningLift=totalRequired-parseFloat(total)
       winningLift = winningLift.toFixed(2)
     }
     return winningLift
