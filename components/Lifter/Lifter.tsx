@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
-import { Badge, Card, Grid, InputBase, TextInput } from '@mantine/core';
+import { Badge, Card,Grid, InputBase, TextInput } from '@mantine/core';
 import { TLifter } from '../../types';
 
 type Props = {
@@ -125,8 +125,11 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
       }
     })
     if(liftToWin>0){
-      result= "Lift above "+String(liftToWin)+"kg"
+      result= String(liftToWin)+"kg+"
     }else{
+      if(total=="0"){
+        return ".."
+      }
       if(oppWeight>=parseFloat(weight)){
         result= "Winning by bodyweight"
       }else{
@@ -158,7 +161,10 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
         liftToWin=calculatePointsToWin(weight,total,lifter.points)
       }
     })
-    return "Lift above "+String(liftToWin)+"kg"
+    if(liftToWin==undefined){
+      return ".."
+    }
+    return String(liftToWin)+"kg+"
   }
 
   useEffect(() => {
@@ -175,9 +181,9 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
   },[lifters])
 
   return (
-    <Card mt="lg" p="lg" radius="md" withBorder>
+      <Card mt="md" p="lg" radius="md" withBorder >
       <Grid>
-        <Grid.Col md={3} span={6}>
+      <Grid.Col md={3} span={6}>
           <TextInput
             placeholder="Athlete"
             label="Athlete 🏋️‍♂️"
@@ -194,28 +200,6 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
             value={lifter.weight}
             onChange={(e) => setLifter(e, 'weight')}
           />
-        </Grid.Col>
-        <Grid.Col md={3} span={6}>
-          <InputBase label="Rank (total) 🏅" variant="unstyled" component="button">
-            {lifter.posByTotal === '1'
-              ? '🥇'
-              : lifter.posByTotal === '2'
-              ? '🥈'
-              : lifter.posByTotal === '3'
-              ? '🥉'
-              : `${lifter.posByTotal}°`}
-          </InputBase>
-        </Grid.Col>
-        <Grid.Col md={3} span={6}>
-          <InputBase label="Rank (points) 🪙" variant="unstyled" component="button">
-            {lifter.posByPoints === '1'
-              ? '🥇'
-              : lifter.posByPoints === '2'
-              ? '🥈'
-              : lifter.posByPoints === '3'
-              ? '🥉'
-              : `${lifter.posByTotal}°`}
-          </InputBase>
         </Grid.Col>
         <Grid.Col md={2} span={4}>
           <TextInput
@@ -244,6 +228,30 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
             type="number"
           />
         </Grid.Col>
+      </Grid>
+      <Grid mt="lg">
+        <Grid.Col md={3} span={6}>
+          <InputBase label="Rank (total) 🏅" variant="unstyled" component="button">
+            {lifter.posByTotal === '1'
+              ? '🥇'
+              : lifter.posByTotal === '2'
+              ? '🥈'
+              : lifter.posByTotal === '3'
+              ? '🥉'
+              : `${lifter.posByTotal}°`}
+          </InputBase>
+        </Grid.Col>
+        <Grid.Col md={3} span={6}>
+          <InputBase label="Rank (points) 🪙" variant="unstyled" component="button">
+            {lifter.posByPoints === '1'
+              ? '🥇'
+              : lifter.posByPoints === '2'
+              ? '🥈'
+              : lifter.posByPoints === '3'
+              ? '🥉'
+              : `${lifter.posByTotal}°`}
+          </InputBase>
+        </Grid.Col>
         <Grid.Col md={3} span={6}>
           <InputBase label="Total (kg) 🏹" variant="unstyled" component="button">
             {lifter.total}
@@ -254,17 +262,17 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
             {lifter.points || '-'}
           </InputBase>
         </Grid.Col>
-        <Grid.Col md={3} span={6} offset={6}>
-          <InputBase label={`${nextUp} (kg) 🤞`} variant="unstyled" component="button" color="red">
+        <Grid.Col md={3} span={6}>
+          <InputBase label={`${nextUp} (kg)`} variant="unstyled" component="button" color="red">
             <Badge color={lifter.posByTotal=="1"?"yellow":"blue"}> {winningLiftTotal}</Badge>
           </InputBase>
         </Grid.Col>
         <Grid.Col md={3} span={6}>
-          <InputBase label={`${nextUp} (points) 🤞`} variant="unstyled" component="button">
+          <InputBase label={`${nextUp} (pts)`} variant="unstyled" component="button">
             <Badge color={lifter.posByPoints=="1"?"yellow":"blue"}>{winningLiftPoints}</Badge>
           </InputBase>
         </Grid.Col>
       </Grid>
     </Card>
-  );
+      );
 };
