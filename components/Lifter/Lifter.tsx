@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
-import { Badge, Card,Grid, InputBase, TextInput } from '@mantine/core';
+import { Badge, Card,Grid, InputBase, TextInput,Button,Modal,Text, Group, Divider } from '@mantine/core';
 import { TLifter } from '../../types';
 
 type Props = {
@@ -14,6 +14,10 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
   const [winningLiftPoints,setWinningLiftPoints] = useState("");
   const [nextUp,setNextup]=useState("")
   const [nextUpPoints,setNextupPoints]=useState("")
+  const [opened, setOpened] = useState(false)
+  const [withinReachNum,setWithinReachNum]=useState(0)
+  const [withinReachArray,setWithinReachArray]=useState(Array<TLifter>)
+  
 
   const setLifter = useCallback(
     (
@@ -131,9 +135,9 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
         return ".."
       }
       if(oppWeight>=parseFloat(weight)){
-        result= "Winning by bodyweight"
+        result= "Winning by bw"
       }else{
-        result= "Losing by bodyweight"
+        result= "Losing by bw"
       }
     }
     return result
@@ -167,6 +171,54 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
     return String(liftToWin)+"kg+"
   }
 
+  const withinReach=(total:string,posByTotal:string,id:number)=>{
+    var possibleOpp=0
+    var temp:TLifter[]=[]
+    lifters.forEach((lifter,index)=>{
+      if(lifter.id!=id && lifter.total!="0" && lifter.total!=""){
+        if((parseFloat(lifter.total)>=(parseFloat(total)-20))&&(parseFloat(lifter.total)<=(parseFloat(total)))){
+          possibleOpp+=1
+          temp.push(lifter)
+      }
+      }
+    })
+    if(possibleOpp>=1){
+      setWithinReachArray(temp)
+      console.log(withinReachArray)
+    }
+    return possibleOpp
+  }
+
+  const showPossibleOpp=()=>{
+    if(withinReachArray.length==0){
+      return <Text>No opponents are within 20kg</Text>
+    }else{
+      return withinReachArray.map((lifter,index)=>
+        oppRow(lifter.name,lifter.total)
+      )
+  }}
+
+  const oppRow=(name:string,total:string)=>{
+    return <Grid mt={"lg"}>
+      <Grid.Col md={3} span={4}>
+      <InputBase label="Name" variant="unstyled" component="button">
+        {name}
+      </InputBase>
+      </Grid.Col>
+      <Grid.Col md={3} span={4}>
+      <InputBase label="Total" variant="unstyled" component="button">
+        {total}kg
+      </InputBase>
+      </Grid.Col>
+      <Grid.Col md={3} span={4}>
+      <InputBase label="Within" variant="unstyled" component="button">
+      {-parseFloat(total)+parseFloat(lifter.total)}kg
+      </InputBase>
+      </Grid.Col>
+    </Grid>
+  }
+ 
+
   useEffect(() => {
     sortLifterByProperty('total');
   }, [lifters[id].total]);
@@ -177,7 +229,9 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
 
   useEffect(()=>{
     setWinningLiftTotal(toWinTotal(lifter.total,lifter.posByTotal,lifter.weight));
-    setWinningLiftPoints(toWinPoints(lifter.posByPoints,lifter.weight,lifter.total))
+    setWinningLiftPoints(toWinPoints(lifter.posByPoints,lifter.weight,lifter.total));
+    setWithinReachNum(withinReach(lifter.total,lifter.posByTotal,lifter.id));
+    console.log(withinReachArray)
   },[lifters])
 
   return (
@@ -272,7 +326,42 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
             <Badge color={lifter.posByPoints=="1"?"yellow":"blue"}>{winningLiftPoints}</Badge>
           </InputBase>
         </Grid.Col>
+        <Grid.Col md={3} span={6}>
+          <InputBase label={"Within reach (20kg)"} variant="unstyled" component="button">
+            <Badge color={withinReachNum>3?"red":"blue"}>{withinReachNum}</Badge>
+          </InputBase>
+        </Grid.Col>
+        <Grid.Col md={3} span={6}>
+          <InputBase  variant="unstyled" component="button">
+          <Button onClick={()=>setOpened(true)} variant="light">Show more</Button>
+          </InputBase>
+        </Grid.Col>
       </Grid>
+      <Modal
+      opened={opened}
+      onClose={() => setOpened(false)}
+      overlayOpacity={0.55}
+      overlayBlur={3}
+      overflow="inside"
+    >
+      <Text>{(lifter.name!="")?`${lifter.name}'s details`:"Details"}</Text>
+      <Card mt="lg" mb="lg">
+        <InputBase label={"Current total"} variant="unstyled" component="button">
+        {(lifter.squat=="")? "0":lifter.squat} / {(lifter.bench==""?"0":lifter.bench)} / {(lifter.deadlift==""?"0":lifter.deadlift)} = <Badge>{lifter.total}kg</Badge>
+        </InputBase>
+      </Card>
+      <Text><Badge mr="lg">{lifter.posByTotal}</Badge> Position by total </Text>
+      <Text><Badge mr="lg">{lifter.posByPoints}</Badge> Position by points </Text>
+      <Text><Badge mr="lg">{winningLiftTotal}</Badge>{nextUp} (total)</Text>
+      <Text mb="lg"><Badge mr="lg">{winningLiftPoints}</Badge>{nextUpPoints} (pts)</Text>
+      <Divider></Divider>
+      <Text mt="lg" mb="sm">Possible opponents</Text>
+      <>
+      {
+        showPossibleOpp()
+      }
+      </>
+    </Modal>
     </Card>
       );
 };
