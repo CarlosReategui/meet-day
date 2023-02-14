@@ -43,12 +43,12 @@ export default function HomePage() {
         <Title order={2}>Meet<Text span fw={400} inherit>Day</Text></Title>
           <Title order={3} mb="lg">📈 Accumulated Total</Title>
           <Group>
-          <Button mt="lg" variant="light" onClick={addLifter} mr="sm">
+          <Button mt="lg" variant="light" onClick={addLifter}>
             + lifter
           </Button>
-          {/* <Button mt="lg" variant="light" ml="lg" color="green" mr="sm">
-            + guess
-          </Button> */}
+          <Button mt="lg" variant="light" color="green">
+            + escenario
+          </Button> 
           <NativeSelect
             data={['20', '40', '60', '80']}
             description="Within range"
