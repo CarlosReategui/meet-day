@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Center, Container, Title,Text,Card } from '@mantine/core';
+import { Button, Center, Container, Title,Text,Card,NativeSelect, Group } from '@mantine/core';
 
 import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
 import { Lifter } from '../components/Lifter/Lifter';
@@ -8,6 +8,7 @@ import { TLifter } from '../types';
 export default function HomePage() {
   const [id, setId] = useState(0);
   const [lifters, setLifters] = useState<TLifter[]>([]);
+  const [withinRange, setWithinRange] = useState('20');
 
   const addLifter = () => {
     setLifters([
@@ -40,18 +41,28 @@ export default function HomePage() {
       <Center>
         <Container m="lg">
         <Title order={2}>Meet<Text span fw={400} inherit>Day</Text></Title>
-          <Title order={3}>📈 Accumulated Total</Title>
-          <Button mt="lg" variant="light" onClick={addLifter}>
+          <Title order={3} mb="lg">📈 Accumulated Total</Title>
+          <Group>
+          <Button mt="lg" variant="light" onClick={addLifter} mr="sm">
             + lifter
           </Button>
-          <Button mt="lg" variant="light" ml="lg" color="green">
+          {/* <Button mt="lg" variant="light" ml="lg" color="green" mr="sm">
             + guess
-          </Button>
+          </Button> */}
+          <NativeSelect
+            data={['20', '40', '60', '80']}
+            description="Within range"
+            variant="filled"
+            size="sm"
+            value={withinRange}
+            onChange={(event) => setWithinRange(event.currentTarget.value)}
+          />
+          </Group>
           <>
           {initialInstructions()}
           </>
           {lifters.map((lifter, idx) => (
-            <Lifter key={idx} lifter={lifter} lifters={lifters} setLifters={setLifters} id={idx} />
+            <Lifter key={idx} lifter={lifter} lifters={lifters} setLifters={setLifters} id={idx} withinRange={withinRange}/>
           ))}
         </Container>
       </Center>

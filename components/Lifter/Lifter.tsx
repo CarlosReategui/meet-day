@@ -7,9 +7,10 @@ type Props = {
   lifter: TLifter;
   lifters: TLifter[];
   setLifters: Dispatch<SetStateAction<TLifter[]>>;
+  withinRange : string
 };
 
-export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
+export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) => {
   const [winningLiftTotal,setWinningLiftTotal] = useState("");
   const [winningLiftPoints,setWinningLiftPoints] = useState("");
   const [nextUp,setNextup]=useState("")
@@ -176,7 +177,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
     var temp:TLifter[]=[]
     lifters.forEach((lifter,index)=>{
       if(lifter.id!=id && lifter.total!="0" && lifter.total!=""){
-        if((parseFloat(lifter.total)>=(parseFloat(total)-20))&&(parseFloat(lifter.total)<=(parseFloat(total)))){
+        if((parseFloat(lifter.total)>=(parseFloat(total)-parseFloat(withinRange)))&&(parseFloat(lifter.total)<=(parseFloat(total)))){
           possibleOpp+=1
           temp.push(lifter)
       }
@@ -191,7 +192,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
 
   const showPossibleOpp=()=>{
     if(withinReachArray.length==0){
-      return <Text>No opponents are within 20kg</Text>
+      return <Text>No opponents are within {withinRange}kg</Text>
     }else{
       return withinReachArray.map((lifter,index)=>
         oppRow(lifter.name,lifter.total)
@@ -228,11 +229,14 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
   }, [lifters[id].points]);
 
   useEffect(()=>{
+    var temp:TLifter[]=[]
+    setWithinReachArray(temp)
     setWinningLiftTotal(toWinTotal(lifter.total,lifter.posByTotal,lifter.weight));
     setWinningLiftPoints(toWinPoints(lifter.posByPoints,lifter.weight,lifter.total));
     setWithinReachNum(withinReach(lifter.total,lifter.posByTotal,lifter.id));
     console.log(withinReachArray)
-  },[lifters])
+  },[lifters,withinRange])
+  
 
   return (
       <Card mt="md" p="lg" radius="md" withBorder >
@@ -327,7 +331,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
           </InputBase>
         </Grid.Col>
         <Grid.Col md={3} span={6}>
-          <InputBase label={"Within reach (20kg)"} variant="unstyled" component="button">
+          <InputBase label={`Within reach `} variant="unstyled" component="button">
             <Badge color={withinReachNum>3?"red":"blue"}>{withinReachNum}</Badge>
           </InputBase>
         </Grid.Col>
@@ -344,18 +348,18 @@ export const Lifter = ({ id, lifter, lifters, setLifters }: Props) => {
       overlayBlur={3}
       overflow="inside"
     >
-      <Text>{(lifter.name!="")?`${lifter.name}'s details`:"Details"}</Text>
+      <Text fw={700}>{(lifter.name!="")?`${lifter.name}'s details`:"Details"}</Text>
       <Card mt="lg" mb="lg">
         <InputBase label={"Current total"} variant="unstyled" component="button">
         {(lifter.squat=="")? "0":lifter.squat} / {(lifter.bench==""?"0":lifter.bench)} / {(lifter.deadlift==""?"0":lifter.deadlift)} = <Badge>{lifter.total}kg</Badge>
         </InputBase>
       </Card>
-      <Text><Badge mr="lg">{lifter.posByTotal}</Badge> Position by total </Text>
-      <Text><Badge mr="lg">{lifter.posByPoints}</Badge> Position by points </Text>
-      <Text><Badge mr="lg">{winningLiftTotal}</Badge>{nextUp} (total)</Text>
+      <Text mb="lg"><Badge mr="lg" >{lifter.posByTotal}</Badge> Position by total </Text>
+      <Text mb="lg"><Badge mr="lg" >{lifter.posByPoints}</Badge> Position by points </Text>
+      <Text mb="lg"><Badge mr="lg" >{winningLiftTotal}</Badge>{nextUp} (total)</Text>
       <Text mb="lg"><Badge mr="lg">{winningLiftPoints}</Badge>{nextUpPoints} (pts)</Text>
       <Divider></Divider>
-      <Text mt="lg" mb="sm">Possible opponents</Text>
+      <Text mt="lg" mb="sm" fw={700}>Possible opponents</Text>
       <>
       {
         showPossibleOpp()
