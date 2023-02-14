@@ -255,6 +255,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
             placeholder="Weight"
             label="Weight (kg) ⚖️"
             type="number"
+            variant="filled"
             value={lifter.weight}
             onChange={(e) => setLifter(e, 'weight')}
           />
@@ -263,6 +264,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
           <TextInput
             placeholder="-"
             label="Squat"
+            variant="filled"
             value={lifter.squat}
             onChange={(e) => setLifter(e, 'squat')}
             type="number"
@@ -272,6 +274,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
           <TextInput
             placeholder="-"
             label="Bench"
+            variant="filled"
             value={lifter.bench}
             onChange={(e) => setLifter(e, 'bench')}
             type="number"
@@ -281,6 +284,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
           <TextInput
             placeholder="-"
             label="Deadlift"
+            variant="filled"
             value={lifter.deadlift}
             onChange={(e) => setLifter(e, 'deadlift')}
             type="number"
