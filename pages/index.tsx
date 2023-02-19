@@ -9,6 +9,7 @@ export default function HomePage() {
   const [id, setId] = useState(0);
   const [lifters, setLifters] = useState<TLifter[]>([]);
   const [withinRange, setWithinRange] = useState('20');
+  const [escenario,setEscenario]=useState(Array<typeof lifters>)
 
   const addLifter = () => {
     setLifters([

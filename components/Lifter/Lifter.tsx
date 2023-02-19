@@ -151,9 +151,9 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
 
   }
 
-  const lookingForTies = (total : string, points: string, name: string)=>{
+  const lookingForTies = (total : string, points: string, weight: string, name: string)=>{
     lifters.forEach((lifter, index)=>{
-      if(lifter.total==total && lifter.name!=name){
+      if(lifter.total==total && lifter.weight==weight && lifter.name!=name){
         setTieTotal("Tied")
       }
       if(lifter.points==points && lifter.name!=name){
@@ -260,11 +260,25 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
       return <Text>No opponents are within {withinRange}kg</Text>
     }else{
       return withinReachArray.map((lifter,index)=>
-        oppRow(lifter.name,lifter.total)
+        oppRow(lifter.name,lifter.total, lifter.weight)
       )
   }}
 
-  const oppRow=(name:string,total:string)=>{
+  const oppRow=(name:string,total:string,weight:string)=>{
+    var within=""
+    if(-parseFloat(total)+parseFloat(lifter.total)>0){
+      within = String(-parseFloat(total)+parseFloat(lifter.total))+"kg"
+    }else{
+      if(tieTotal!="Tied"){
+        if(parseFloat(lifter.weight)<parseFloat(weight)){
+          within = "Tied (BW)"
+        }else{
+          within = "Tied (BW)"
+        }
+      }else{
+        within = "Tied"
+      }
+    }
     return <Grid mt={"lg"}>
       <Grid.Col md={3} span={4}>
       <InputBase label="Name" variant="unstyled" component="button">
@@ -278,7 +292,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
       </Grid.Col>
       <Grid.Col md={3} span={4}>
       <InputBase label="Within" variant="unstyled" component="button">
-      {(-parseFloat(total)+parseFloat(lifter.total))>0?`${(-parseFloat(total)+parseFloat(lifter.total))}kg`:"Tied"}
+      {within}
       </InputBase>
       </Grid.Col>
     </Grid>
@@ -299,7 +313,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
     setWithinReachArray(temp)
     setTieTotal("")
     setTiePoints("")
-    lookingForTies(lifter.total,lifter.points,lifter.name);
+    lookingForTies(lifter.total,lifter.points,lifter.weight,lifter.name);
     setWinningLiftTotal(toWinTotal(lifter.total,lifter.posByTotal,lifter.weight));
     setWinningLiftPoints(toWinPoints(lifter.posByPoints,lifter.weight,lifter.total));
     setWithinReachNum(withinReach(lifter.total,lifter.posByTotal,lifter.id));
