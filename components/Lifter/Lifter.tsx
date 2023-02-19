@@ -18,6 +18,8 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
   const [opened, setOpened] = useState(false)
   const [withinReachNum,setWithinReachNum]=useState(0)
   const [withinReachArray,setWithinReachArray]=useState(Array<TLifter>)
+  const [tieTotal,setTieTotal]=useState("")
+  const [tiePoints,setTiePoints]=useState("")
   
 
   const setLifter = useCallback(
@@ -70,11 +72,55 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
   const sortLifterByProperty = useCallback(
     (property: 'total' | 'points') => {
       const liftersCopy = structuredClone(lifters);
-      liftersCopy.sort((a, b) => parseFloat(b[property] || '0') - parseFloat(a[property] || '0'));
+
+      if(property== 'total'){
+        liftersCopy.sort((a, b)=> parseFloat(a['weight'] || '0') - parseFloat(b['weight'] || '0'));
+        liftersCopy.sort((a, b) => parseFloat(b[property] || '0') - parseFloat(a[property] || '0'));
+      }else{
+        liftersCopy.sort((a, b) => parseFloat(b[property] || '0') - parseFloat(a[property] || '0'));
+      }
+      
 
       const order: { [key: number]: number } = {};
+
+      var placing = 0
+
       liftersCopy.forEach((curLifter, idx) => {
-        order[curLifter.id] = idx + 1;
+        if(property=='total'){
+          if(idx>0){
+            if(liftersCopy[idx-1].total!=liftersCopy[idx].total){
+              order[curLifter.id] = placing + 1;
+              placing+=1
+            }else{
+              if(liftersCopy[idx-1].weight<liftersCopy[idx].weight){
+                order[curLifter.id] = placing + 1;
+                placing+=1
+              }else if(liftersCopy[idx-1].weight>liftersCopy[idx].weight){
+                liftersCopy[idx-1].id=placing+1
+                order[curLifter.id] = placing
+                placing+=1
+              }else if(liftersCopy[idx-1].weight==liftersCopy[idx].weight){
+                order[curLifter.id] = placing;
+              }
+            }
+          }else{
+            order[curLifter.id] = placing +1;
+            placing+=1
+          }
+        }else if(property=='points'){
+          if(idx>0){
+            if(liftersCopy[idx-1].points!=liftersCopy[idx].points){
+              order[curLifter.id] = placing + 1;
+              placing+=1
+            }else{
+              order[curLifter.id] = placing;
+            }
+          }else{
+            order[curLifter.id] = placing + 1;
+            placing+=1
+          }
+        }
+        
       });
 
       const p: 'Total' | 'Points' = property === 'total' ? 'Total' : 'Points';
@@ -105,6 +151,17 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
 
   }
 
+  const lookingForTies = (total : string, points: string, name: string)=>{
+    lifters.forEach((lifter, index)=>{
+      if(lifter.total==total && lifter.name!=name){
+        setTieTotal("Tied")
+      }
+      if(lifter.points==points && lifter.name!=name){
+        setTiePoints("Tied")
+      }
+    })
+  }
+
   const toWinTotal = (total: string, posByTotal: string,weight:string)=>{
     let liftToWin = 0
     let oppositionPos = ""
@@ -112,7 +169,11 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
     let result=""
     if(posByTotal=="1"){
       setNextup("To win")
-      return String("🏆")
+      if(tieTotal!="Tied"){
+        return String("🏆")
+      }else{
+        return "Tied for 🏆"
+      }
     }else if(posByTotal=="2"){
       oppositionPos="1"
       setNextup("For 1st place")
@@ -150,7 +211,11 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
     let oppositionPos = ""
     if(posByPoints=="1"){
       setNextupPoints("To win")
-      return String("🏆")
+      if(tiePoints!="Tied"){
+        return String("🏆")
+      }else{
+        return "Tied for 🏆"
+      }
     }else if(posByPoints=="2"){
       oppositionPos="1"
       setNextupPoints("For 1st place")
@@ -213,7 +278,7 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
       </Grid.Col>
       <Grid.Col md={3} span={4}>
       <InputBase label="Within" variant="unstyled" component="button">
-      {-parseFloat(total)+parseFloat(lifter.total)}kg
+      {(-parseFloat(total)+parseFloat(lifter.total))>0?`${(-parseFloat(total)+parseFloat(lifter.total))}kg`:"Tied"}
       </InputBase>
       </Grid.Col>
     </Grid>
@@ -222,19 +287,22 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
 
   useEffect(() => {
     sortLifterByProperty('total');
-  }, [lifters[id].total]);
+    console.log(lifters)
+  }, [lifters[id].total,lifters[id].weight]);
 
   useEffect(() => {
     sortLifterByProperty('points');
-  }, [lifters[id].points]);
+  }, [lifters[id].points,lifters[id].weight]);
 
   useEffect(()=>{
     var temp:TLifter[]=[]
     setWithinReachArray(temp)
+    setTieTotal("")
+    setTiePoints("")
+    lookingForTies(lifter.total,lifter.points,lifter.name);
     setWinningLiftTotal(toWinTotal(lifter.total,lifter.posByTotal,lifter.weight));
     setWinningLiftPoints(toWinPoints(lifter.posByPoints,lifter.weight,lifter.total));
     setWithinReachNum(withinReach(lifter.total,lifter.posByTotal,lifter.id));
-    console.log(withinReachArray)
   },[lifters,withinRange])
   
 
@@ -295,22 +363,22 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
         <Grid.Col md={3} span={6}>
           <InputBase label="Rank (total) 🏅" variant="unstyled" component="button">
             {lifter.posByTotal === '1'
-              ? '🥇'
+              ? `🥇 ${tieTotal}`
               : lifter.posByTotal === '2'
-              ? '🥈'
+              ? `🥈 ${tieTotal}`
               : lifter.posByTotal === '3'
-              ? '🥉'
+              ? `🥉 ${tieTotal}`
               : `${lifter.posByTotal}°`}
           </InputBase>
         </Grid.Col>
         <Grid.Col md={3} span={6}>
           <InputBase label="Rank (points) 🪙" variant="unstyled" component="button">
             {lifter.posByPoints === '1'
-              ? '🥇'
+              ? `🥇 ${tiePoints}`
               : lifter.posByPoints === '2'
-              ? '🥈'
+              ? `🥈 ${tiePoints}`
               : lifter.posByPoints === '3'
-              ? '🥉'
+              ? `🥉 ${tiePoints}`
               : `${lifter.posByTotal}°`}
           </InputBase>
         </Grid.Col>
@@ -358,8 +426,8 @@ export const Lifter = ({ id, lifter, lifters, setLifters,withinRange }: Props) =
         {(lifter.squat=="")? "0":lifter.squat} / {(lifter.bench==""?"0":lifter.bench)} / {(lifter.deadlift==""?"0":lifter.deadlift)} = <Badge>{lifter.total}kg</Badge>
         </InputBase>
       </Card>
-      <Text mb="lg"><Badge mr="lg" >{lifter.posByTotal}</Badge> Position by total </Text>
-      <Text mb="lg"><Badge mr="lg" >{lifter.posByPoints}</Badge> Position by points </Text>
+      <Text mb="lg"><Badge mr="lg" >{lifter.posByTotal} {tieTotal}</Badge> Position by total </Text>
+      <Text mb="lg"><Badge mr="lg" >{lifter.posByPoints} {tiePoints}</Badge> Position by points </Text>
       <Text mb="lg"><Badge mr="lg" >{winningLiftTotal}</Badge>{nextUp} (total)</Text>
       <Text mb="lg"><Badge mr="lg">{winningLiftPoints}</Badge>{nextUpPoints} (pts)</Text>
       <Divider></Divider>
