@@ -86,7 +86,7 @@ export default function HomePage() {
   }
 
   const showEscenarioName=()=>{
-    if(selectEscenario!="original" && escenario.length>0){
+    if(selectEscenario!="original" && escenario.length>0 && namesOfEscenarios[Number(selectEscenario)]!=""){
       return <>
       <Badge mt="lg" color="green">
         {namesOfEscenarios[Number(selectEscenario)]}
